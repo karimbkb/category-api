@@ -1,0 +1,13 @@
+micronaut:
+  application:
+    name: categoryApi
+
+mongodb:
+  uri: ${MONGODB_DATASOURCE_URI}
+  options:
+    maxConnectionIdleTime: 10000
+    readConcern: majority
+
+category:
+  database-name: category
+  collection-name: category
