@@ -1,6 +1,18 @@
 micronaut:
   application:
     name: categoryApi
+  router:
+    static-resources:
+      swagger:
+        enabled: true
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+
+swagger-ui:
+  enabled: true
 
 mongodb:
   uri: ${MONGODB_DATASOURCE_URI}

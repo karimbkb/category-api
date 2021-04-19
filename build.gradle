@@ -38,6 +38,8 @@ dependencies {
     testCompile "org.testcontainers:testcontainers:1.15.2"
     testImplementation("org.testcontainers:junit-jupiter:1.15.2")
     testImplementation "org.mockito:mockito-junit-jupiter:3.5.10"
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+    implementation "io.swagger.core.v3:swagger-annotations"
 
 }
 
@@ -76,6 +78,12 @@ jacocoTestReport {
     }
 }
 
+tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.jvmArgs << '-Dmicronaut.openapi.views.spec=rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=flattop'
+}
+
+compileJava.dependsOn tasks.googleJavaFormat
 
 
 

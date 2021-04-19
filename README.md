@@ -11,6 +11,7 @@
 - [Setup](#setup)
 - [Dependencies](#dependencies)
 - [Endpoints](#endpoints)
+- [Swagger](#swagger)
 - [Unit Tests](#unit-tests)
 - [Code Coverage](#code-coverage)
 - [Coding Style](#coding-style)
@@ -43,6 +44,10 @@ After that the api can be called via `http://localhost:8080/`
 | Create a category     | `/v1/category/`                               | `POST`  | `/v1/category`                   | `{"name": "Bottom up", "path": "bottom-up"}`      |
 | Update a category     | `/v1/category/{id}`                               | `POST`  | `/v1/category/3f19324a-39dc-41f4-b88b-b05ff2c38c5a`                   | `{"name": "Bottom up", "path": "bottom-up"}`      |
 
+## Swagger
+
+- OpenAPI specs can be found here: http://localhost:8080/swagger/category-api-1.0.yml
+- Swagger UI can be accessed here: http://localhost:8080/swagger-ui
 
 ## Unit Tests
 

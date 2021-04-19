@@ -14,15 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Category {
   private String id;
-
   @NotEmpty @NotBlank @NotNull private String name;
-
   @NotEmpty @NotBlank @NotNull private String path;
-
   private String createdAt;
   private String updatedAt;
 
-  // TODO: maybe find other way to create category objects
   public Category(
       @NotEmpty @NotBlank @NotNull String name, @NotEmpty @NotBlank @NotNull String path) {
     this.name = name;

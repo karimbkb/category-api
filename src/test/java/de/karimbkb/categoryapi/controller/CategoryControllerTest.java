@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @MicronautTest(transactional = false)
@@ -82,6 +82,12 @@ class CategoryControllerTest implements TestPropertyProvider {
             .blockingFirst();
 
     assertEquals(HttpStatus.OK, response.getStatus());
+    assertTrue(response.getBody().get().getId().matches("[A-Za-z0-9\\-]+"));
+    assertEquals("Jeans For Men", response.getBody().get().getName());
+    assertEquals("jeans-for-men", response.getBody().get().getPath());
+    assertNotNull(response.getBody().get().getCreatedAt());
+    assertNotNull(response.getBody().get().getUpdatedAt());
+
   }
 
   @Test
@@ -89,35 +95,45 @@ class CategoryControllerTest implements TestPropertyProvider {
     Assertions.assertThrows(
         HttpClientResponseException.class,
         () -> {
-          HttpResponse<Category> response =
+          HttpResponse<Category> getResponse =
               client
                   .exchange(HttpRequest.GET("/v1/category/pants"), Category.class)
                   .blockingFirst();
 
-          assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+          assertEquals(HttpStatus.NOT_FOUND, getResponse.getStatus());
         });
   }
 
   @Test
   void saveCategory() {
     Category category = new Category("Hoodies For Men", "hoodies-for-men");
-    HttpResponse<Category> response =
+    HttpResponse<Category> saveResponse =
         client
             .exchange(HttpRequest.POST("/v1/category/", category), Category.class)
             .blockingFirst();
 
-    assertEquals(HttpStatus.CREATED, response.getStatus());
+    assertEquals(HttpStatus.CREATED, saveResponse.getStatus());
+    assertTrue(saveResponse.getBody().get().getId().matches("[A-Za-z0-9\\-]+"));
+    assertEquals("Hoodies For Men", saveResponse.getBody().get().getName());
+    assertEquals("hoodies-for-men", saveResponse.getBody().get().getPath());
+    assertNotNull(saveResponse.getBody().get().getCreatedAt());
+    assertNotNull(saveResponse.getBody().get().getUpdatedAt());
   }
 
   @Test
   void saveCategoryWithPathNull() {
     Category category = new Category("Hoodies For Men", "");
-    HttpResponse<Category> response =
+    HttpResponse<Category> saveResponse =
         client
             .exchange(HttpRequest.POST("/v1/category/", category), Category.class)
             .blockingFirst();
 
-    assertEquals(HttpStatus.CREATED, response.getStatus());
+    assertEquals(HttpStatus.CREATED, saveResponse.getStatus());
+    assertTrue(saveResponse.getBody().get().getId().matches("[A-Za-z0-9\\-]+"));
+    assertEquals("Hoodies For Men", saveResponse.getBody().get().getName());
+    assertEquals("hoodies-for-men", saveResponse.getBody().get().getPath());
+    assertNotNull(saveResponse.getBody().get().getCreatedAt());
+    assertNotNull(saveResponse.getBody().get().getUpdatedAt());
   }
 
   @Test
@@ -126,12 +142,12 @@ class CategoryControllerTest implements TestPropertyProvider {
         HttpClientResponseException.class,
         () -> {
           Category category = new Category("", "");
-          HttpResponse<Category> response =
+          HttpResponse<Category> saveResponse =
               client
                   .exchange(HttpRequest.POST("/v1/category/", category), Category.class)
                   .blockingFirst();
 
-          assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+          assertEquals(HttpStatus.NOT_FOUND, saveResponse.getStatus());
         });
   }
 
@@ -146,6 +162,11 @@ class CategoryControllerTest implements TestPropertyProvider {
             .blockingFirst();
 
     assertEquals(HttpStatus.OK, updateResponse.getStatus());
+    assertTrue(updateResponse.getBody().get().getId().matches("[A-Za-z0-9\\-]+"));
+    assertEquals("Jeans For Men", updateResponse.getBody().get().getName());
+    assertEquals("jeans-for-men", updateResponse.getBody().get().getPath());
+    assertNotNull(updateResponse.getBody().get().getCreatedAt());
+    assertNotNull(updateResponse.getBody().get().getUpdatedAt());
   }
 
   @Test
@@ -173,6 +194,7 @@ class CategoryControllerTest implements TestPropertyProvider {
             .blockingFirst();
 
     assertEquals(HttpStatus.OK, updateResponse.getStatus());
+    assertEquals(response.getBody().get().getId(), updateResponse.getBody().get().getId());
   }
 
   @Test
@@ -193,14 +215,19 @@ class CategoryControllerTest implements TestPropertyProvider {
 
   @Test
   void deleteCategory() {
-    HttpResponse<Category> updateResponse =
+    HttpResponse<Category> deleteResponse =
         client
             .exchange(
                 HttpRequest.DELETE("/v1/category/" + response.getBody().get().getId()),
                 Category.class)
             .blockingFirst();
 
-    assertEquals(HttpStatus.OK, updateResponse.getStatus());
+    assertEquals(HttpStatus.OK, deleteResponse.getStatus());
+    assertEquals(response.getBody().get().getId(), deleteResponse.getBody().get().getId());
+    assertEquals("Jeans For Men", deleteResponse.getBody().get().getName());
+    assertEquals("jeans-for-men", deleteResponse.getBody().get().getPath());
+    assertNotNull(deleteResponse.getBody().get().getCreatedAt());
+    assertNotNull(deleteResponse.getBody().get().getUpdatedAt());
   }
 
   @Test
