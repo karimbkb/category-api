@@ -1,0 +1,8 @@
+<FindBugsFilter>
+    <Match>
+        <Or>
+            <Class name="de.karimbkb.categoryapi.dto.Category"/>
+            <Bug pattern="NP_NONNULL_PARAM_VIOLATION"/>
+        </Or>
+    </Match>
+</FindBugsFilter>

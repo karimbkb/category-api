@@ -1,9 +1,23 @@
+import com.github.spotbugs.snom.SpotBugsReport
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.spotbugs.snom:spotbugs-gradle-plugin:4.5.0"
+    }
+}
+
 plugins {
     id "jacoco"
     id "io.freefair.lombok" version "5.2.1"
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "io.micronaut.application" version '1.0.5'
     id 'com.github.sherter.google-java-format' version '0.9'
+    id "com.github.spotbugs" version "4.5.0"
 }
 
 version "0.1"
@@ -48,6 +62,21 @@ java {
     sourceCompatibility = JavaVersion.toVersion('11')
     targetCompatibility = JavaVersion.toVersion('11')
 }
+
+apply plugin: "com.github.spotbugs"
+spotbugsTest.enabled = false
+
+spotbugsMain {
+    reports(({
+        xml.enabled = false
+        html.enabled = true
+    } as Closure<NamedDomainObjectContainer<? extends SpotBugsReport>>))
+}
+
+spotbugs {
+    excludeFilter = file("spotbugs-exclude.xml")
+}
+
 
 // use JUnit 5 platform
 test {

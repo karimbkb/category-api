@@ -91,4 +91,4 @@ To format all java files:
 
 ## Static Code Analyzer
 
-Not used
+Spotbugs was used in this project. (https://spotbugs.github.io/)
