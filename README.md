@@ -3,6 +3,11 @@
 
 [![codecov](https://codecov.io/gh/karimbkb/category-api/branch/master/graph/badge.svg?token=tprxgsRDGg)](https://codecov.io/gh/karimbkb/category-api)
 [![Build Status](https://travis-ci.com/karimbkb/category-api.svg?branch=master)](https://travis-ci.com/karimbkb/category-api)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=karimbkb_category-api&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=karimbkb_category-api)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=karimbkb_category-api&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=karimbkb_category-api)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=karimbkb_category-api&metric=security_rating)](https://sonarcloud.io/dashboard?id=karimbkb_category-api)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=karimbkb_category-api&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=karimbkb_category-api)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=karimbkb_category-api&metric=bugs)](https://sonarcloud.io/dashboard?id=karimbkb_category-api)
 [![made-with-Micronaut](https://img.shields.io/badge/Micronaut-2.3.1-1f425f.svg)](https://micronaut.io/)
 
 
