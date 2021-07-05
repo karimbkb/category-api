@@ -16,6 +16,12 @@ before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
+addons:
+  sonarcloud:
+    organization: karimbkb
+    token:
+      secure: "Grk5phl3mmIWdd4wDlweHFe7/xGsyhbYUWVKDoRZd/PiXZnvuJP0LbDLqXNDOlAomtUcYMkqqkx0QOU3hMwcicS0CLOKuRjsdmYKexXBdNOhY9uBbjr4OMty2WZZNhdcQyvMvaiT4THMVOfk1WRQQow/Z0LaPyW+svXkAaicq3qU+w3Kpq6L+SRIfPYwx5XyFnZ70VIJT+Nj+WVgVgg4k2vCKMfxgTrEmGotWqWxeUx+tf7IJJCS5rlesY35wG0qnKTBl3hWgXKUkp2fwt75cbsM9Ok4Y63Gq/dWBOvI6ZRE9M4z2KXDwwfJxjUZY1zV56Uvg0wKmovhM/TSSQqV1S4+oOa7gM/0iQ5halduCnSYZtb2uTzX0b9EXXAumf3R5P8TJhNYopXOfn4rHEleSt+p0qOITDb7OZqN1WrtFJr783H3nAXQyw22OwYsQ0DGAqVb4zCCMmGFFr3e3BF4kKV3ScsDy+m6ec04NxnEmBUO1QhbQlWycyqwV1JURvp1ZFN/w13UJ10ku4XzYZ0K+4uRnPakK4KeGAgXhTwTTeMf9dWNk7ZHfP0GI2byA9EHX6RJOhfCHKAiyRjJBlCwduniGNzJWlZFRdX4kZBoX3bpboaTrn0U6Fyzk0lYDiR7CD5pGNeTvnyW4flA9hXWLEtJHzyOnbYEd4mVDKHIl0M="
+
 cache:
   directories:
     - $HOME/.gradle/caches/
@@ -25,6 +31,7 @@ script:
   - git clone https://github.com/karimbkb/category-api.git
   - cd category-api
   - ./gradlew build
+  - ./gradlew sonarqube
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
