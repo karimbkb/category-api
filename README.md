@@ -47,7 +47,7 @@ After that the api can be called via `http://localhost:8080/`
 | Fetch a category         | `/v1/category/{path}`                         | `GET`   | `/v1/category/bottom-up`             | -                               |
 | Remove a category | `/v1/category/{id}`                              | `DELETE`| `/v1/category/3f19324a-39dc-41f4-b88b-b05ff2c38c5a`                   | -      |
 | Create a category     | `/v1/category/`                               | `POST`  | `/v1/category`                   | `{"name": "Bottom up", "path": "bottom-up"}`      |
-| Update a category     | `/v1/category/{id}`                               | `POST`  | `/v1/category/3f19324a-39dc-41f4-b88b-b05ff2c38c5a`                   | `{"name": "Bottom up", "path": "bottom-up"}`      |
+| Update a category     | `/v1/category/{id}`                               | `PUT`  | `/v1/category/3f19324a-39dc-41f4-b88b-b05ff2c38c5a`                   | `{"name": "Bottom up", "path": "bottom-up"}`      |
 
 ## Swagger
 
@@ -97,3 +97,7 @@ To format all java files:
 ## Static Code Analyzer
 
 Spotbugs was used in this project. (https://spotbugs.github.io/)
+
+```
+./gradlew spotbugsMain
+```
