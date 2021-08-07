@@ -9,9 +9,10 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
+
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Singleton;
 
 @Produces
 @Singleton
@@ -22,6 +23,6 @@ public class CategoryExceptionHandler implements ExceptionHandler<CategoryExcept
   public HttpResponse handle(HttpRequest request, CategoryException exception) {
     return HttpResponse.notFound(
         new ApiError(
-            List.of(new ApiErrorDetails(404, exception.getMessage(), "CE-002", Set.of()))));
+            List.of(new ApiErrorDetails(500, exception.getMessage(), "CE-002", Set.of()))));
   }
 }
