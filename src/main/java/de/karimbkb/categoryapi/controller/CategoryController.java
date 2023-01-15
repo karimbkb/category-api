@@ -1,10 +1,5 @@
 package de.karimbkb.categoryapi.controller;
 
-import static com.mongodb.client.model.Filters.eq;
-
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import de.karimbkb.categoryapi.configuration.CategoryConfig;
 import de.karimbkb.categoryapi.dto.Category;
 import de.karimbkb.categoryapi.exception.CategoryException;
 import de.karimbkb.categoryapi.exception.CategoryNotFoundException;
@@ -33,25 +28,18 @@ public class CategoryController implements CategoryApi {
 
   private final Scheduler scheduler;
   private final CategoryService categoryService;
-  private final MongoClient mongoClient;
-  private final CategoryConfig categoryConfig;
 
   public CategoryController(
-      @Named(TaskExecutors.IO) ExecutorService executorService,
-      CategoryService categoryService,
-      MongoClient mongoClient,
-      CategoryConfig categoryConfig) {
+      @Named(TaskExecutors.IO) ExecutorService executorService, CategoryService categoryService) {
     this.scheduler = Schedulers.from(executorService);
     this.categoryService = categoryService;
-    this.mongoClient = mongoClient;
-    this.categoryConfig = categoryConfig;
   }
 
   @Get("/category/{path}")
   public Single<MutableHttpResponse<Category>> getCategory(@NotEmpty String path) {
     return Single.fromCallable(
             () ->
-                Optional.ofNullable(loadCategoryByPath(path))
+                Optional.ofNullable(categoryService.loadCategoryByPath(path))
                     .map(HttpResponse::ok)
                     .orElseThrow(() -> CategoryNotFoundException.withPath(path)))
         .subscribeOn(scheduler);
@@ -60,22 +48,25 @@ public class CategoryController implements CategoryApi {
   @Post("/category")
   public Single<MutableHttpResponse<Category>> saveCategory(@Body Single<Category> categoryInput) {
     return categoryInput.map(
-        c -> {
+        categoryRequest -> {
           try {
             Category category =
                 new Category(
                     UUID.randomUUID().toString(),
-                    c.getName(),
-                    c.getPath() == null ? categoryService.buildPath(c) : c.getPath(),
+                    categoryRequest.getName(),
+                    categoryRequest.getPath() == null
+                        ? categoryService.buildPath(categoryRequest)
+                        : categoryRequest.getPath(),
                     LocalDateTime.now().toString(),
                     LocalDateTime.now().toString());
 
-            getCollection().insertOne(category);
+            categoryService.getCollection().insertOne(category);
             log.info("Category {} was saved successfully.", category);
             return HttpResponse.created(category);
           } catch (Exception e) {
-            log.error("Category {} could not be saved with exception {}", c.getName(), e);
-            throw CategoryException.withCategory(c);
+            log.error(
+                "Category {} could not be saved with exception {}", categoryRequest.getName(), e);
+            throw CategoryException.withCategory(categoryRequest);
           }
         });
   }
@@ -84,23 +75,28 @@ public class CategoryController implements CategoryApi {
   public Single<MutableHttpResponse<Category>> updateCategory(
       @NotEmpty String id, @Body Single<Category> categoryInput) {
     return categoryInput.map(
-        c -> {
+        categoryRequest -> {
           try {
-            return Optional.ofNullable(loadCategoryById(id))
+            return Optional.ofNullable(categoryService.loadCategoryById(id))
                 .map(
                     loadedCategory -> {
                       Category category =
                           new Category(
                               loadedCategory.getId(),
-                              c.getName() == null ? loadedCategory.getName() : c.getName(),
-                              c.getPath() == null ? loadedCategory.getPath() : c.getPath(),
-                              c.getCreatedAt() == null
+                              categoryRequest.getName() == null
+                                  ? loadedCategory.getName()
+                                  : categoryRequest.getName(),
+                              categoryRequest.getPath() == null
+                                  ? loadedCategory.getPath()
+                                  : categoryRequest.getPath(),
+                              categoryRequest.getCreatedAt() == null
                                   ? loadedCategory.getCreatedAt()
-                                  : c.getCreatedAt(),
-                              c.getUpdatedAt() == null
+                                  : categoryRequest.getCreatedAt(),
+                              categoryRequest.getUpdatedAt() == null
                                   ? loadedCategory.getUpdatedAt()
-                                  : c.getUpdatedAt());
-                      getCollection()
+                                  : categoryRequest.getUpdatedAt());
+                      categoryService
+                          .getCollection()
                           .updateOne(
                               new Document("_id", category.getId()),
                               new Document("$set", category));
@@ -108,10 +104,11 @@ public class CategoryController implements CategoryApi {
                       log.info("Category {} was updated successfully.", category);
                       return HttpResponse.ok(category);
                     })
-                .orElseThrow(() -> CategoryNotFoundException.withPath(c.getPath()));
+                .orElseThrow(() -> CategoryNotFoundException.withPath(categoryRequest.getPath()));
           } catch (Exception e) {
-            log.error("Category {} could not be updated with exception {}", c.getName(), e);
-            throw CategoryException.withCategory(c);
+            log.error(
+                "Category {} could not be updated with exception {}", categoryRequest.getName(), e);
+            throw CategoryException.withCategory(categoryRequest);
           }
         });
   }
@@ -121,10 +118,10 @@ public class CategoryController implements CategoryApi {
     return Single.fromCallable(
             () -> {
               try {
-                return Optional.ofNullable(loadCategoryById(id))
+                return Optional.ofNullable(categoryService.loadCategoryById(id))
                     .map(
                         loadedCategory -> {
-                          getCollection().deleteOne(new Document("_id", id));
+                          categoryService.getCollection().deleteOne(new Document("_id", id));
 
                           log.info("Category {} was deleted successfully.", loadedCategory);
                           return HttpResponse.ok(loadedCategory);
@@ -136,19 +133,5 @@ public class CategoryController implements CategoryApi {
               }
             })
         .subscribeOn(scheduler);
-  }
-
-  private MongoCollection<Category> getCollection() {
-    return mongoClient
-        .getDatabase(categoryConfig.getDatabaseName())
-        .getCollection(categoryConfig.getCollectionName(), Category.class);
-  }
-
-  private Category loadCategoryByPath(String path) {
-    return getCollection().find(eq("path", path)).limit(1).first();
-  }
-
-  private Category loadCategoryById(String id) {
-    return getCollection().find(eq("_id", id)).limit(1).first();
   }
 }

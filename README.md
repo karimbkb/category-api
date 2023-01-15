@@ -27,7 +27,7 @@
 Go into the root directory of the application and run
 
 ```
-docker-compse up -d --build
+docker-compose up -d --build
 ```
 
 After that the api can be called via `http://localhost:8080/`

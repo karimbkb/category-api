@@ -19,17 +19,12 @@ public class Category {
   private String createdAt;
   private String updatedAt;
 
-  public Category(
-      @NotEmpty @NotBlank @NotNull String name, @NotEmpty @NotBlank @NotNull String path) {
+  public Category(@NotNull String name, @NotNull String path) {
     this.name = name;
     this.path = path;
   }
 
-  public Category(
-      @NotEmpty @NotBlank @NotNull String name,
-      @NotEmpty @NotBlank @NotNull String path,
-      String createdAt,
-      String updatedAt) {
+  public Category(@NotNull String name, @NotNull String path, String createdAt, String updatedAt) {
     this.name = name;
     this.path = path;
     this.createdAt = createdAt;
